@@ -1,7 +1,7 @@
 {
-  "name": "playtime",
+  "name": "PlaceMark",
   "version": "0.10.1",
-  "description": "A Playlist application for the HDip in Computing, WIT",
+  "description": "A Node.js and Hapi application that allows users to create and manage geographic points of interest.",
   "main": "index.js",
   "type": "module",
   "scripts": {
