@@ -20,6 +20,13 @@
             </div>
 
             <div class="field">
+              <label class="label">Location</label>
+              <div class="control">
+                <input class="input" type="text" name="locationName" value="{{track.locationName}}">
+              </div>
+            </div>
+
+            <div class="field">
               <label class="label">Latitude</label>
               <div class="control">
                 <input class="input" type="text" name="latitude" value="{{track.latitude}}">
@@ -32,6 +39,29 @@
                 <input class="input" type="text" name="longitude" value="{{track.longitude}}">
               </div>
             </div>
+
+            <div class="field">
+              <label class="label">Description</label>
+              <div class="control">
+                <textarea class="textarea" name="description" placeholder="Write a short description of the place (max 500 characters)">{{track.description}}</textarea>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Image URL (temporary)</label>
+              <div class="control">
+                <input class="input" type="text" name="image" value="{{track.image}}">
+              </div>
+            </div>
+
+            {{#if track.image}}
+              <div class="field">
+                <label class="label">Current Image</label>
+                <figure class="image is-4by3">
+                  <img src="{{track.image}}" alt="{{track.name}}">
+                </figure>
+              </div>
+            {{/if}}
 
             <div class="field">
               <button class="button is-primary is-fullwidth">

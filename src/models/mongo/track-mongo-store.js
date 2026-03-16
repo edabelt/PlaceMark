@@ -50,8 +50,11 @@ export const trackMongoStore = {
     }
 
     trackDoc.name = updatedTrack.name;
+    trackDoc.locationName = updatedTrack.locationName;
     trackDoc.latitude = updatedTrack.latitude;
     trackDoc.longitude = updatedTrack.longitude;
+    trackDoc.description = updatedTrack.description;
+    trackDoc.image = updatedTrack.image;
 
     await trackDoc.save();
     return trackDoc;

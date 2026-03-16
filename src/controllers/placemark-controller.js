@@ -41,10 +41,13 @@ export const placemarkController = {
       const track = await db.trackStore.getTrackById(request.params.trackid);
 
       const newTrack = {
-  name: request.payload.name,
-  latitude: Number(request.payload.latitude),
-  longitude: Number(request.payload.longitude),
-};
+        name: request.payload.name,
+        locationName: request.payload.locationName,
+        latitude: Number(request.payload.latitude),
+        longitude: Number(request.payload.longitude),
+        description: request.payload.description,
+        image: request.payload.image,
+      };
 
       await db.trackStore.updateTrack(track, newTrack);
       return h.redirect(`/category/${request.params.id}`);

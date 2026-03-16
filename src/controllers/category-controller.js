@@ -37,10 +37,13 @@ export const categoryController = {
       const playlist = await db.playlistStore.getPlaylistById(request.params.id);
 
       const newTrack = {
-  name: request.payload.name,
-  latitude: Number(request.payload.latitude),
-  longitude: Number(request.payload.longitude),
-};
+        name: request.payload.name,
+        locationName: request.payload.locationName,
+        latitude: Number(request.payload.latitude),
+        longitude: Number(request.payload.longitude),
+        description: request.payload.description,
+        image: request.payload.image,
+      };
 
       await db.trackStore.addTrack(playlist._id, newTrack);
       return h.redirect(`/category/${playlist._id}`);

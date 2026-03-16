@@ -1,38 +1,73 @@
-<table class="table is-fullwidth is-striped is-hoverable">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Latitude</th>
-    <th>Longitude</th>
-    <th class="has-text-centered">Edit</th>
-    <th class="has-text-centered">Delete</th>
-  </tr>
-</thead>
+{{#if playlist.tracks.length}}
 
-  <tbody>
-    {{#each playlist.tracks}}
-      <tr>
-        <td>{{name}}</td>
-        <td>{{latitude}}</td>
-        <td>{{longitude}}</td>
+<div class="columns is-multiline">
+  {{#each playlist.tracks}}
+    <div class="column is-half">
+      <div class="card">
 
-        <td class="has-text-centered">
-          <a href="/placemark/{{../playlist._id}}/edit/{{_id}}" class="button is-small is-link is-light">
-            <span class="icon">
-              <i class="fas fa-edit"></i>
+        <div class="card-image">
+          {{#if image}}
+            <figure class="image is-4by3">
+              <img src="{{image}}" alt="{{name}}">
+            </figure>
+          {{else}}
+            <figure class="image is-4by3 has-background-light is-flex is-align-items-center is-justify-content-center">
+              <span>No image</span>
+            </figure>
+          {{/if}}
+        </div>
+
+        <div class="card-content">
+          <div class="media">
+            <div class="media-content">
+              <p class="title is-5">{{name}}</p>
+              <p class="subtitle is-6">{{locationName}}</p>
+            </div>
+          </div>
+
+          <div class="content">
+            {{#if description}}
+              <p>{{description}}</p>
+            {{else}}
+              <p>No description available.</p>
+            {{/if}}
+
+            <p>
+              <strong>Latitude:</strong> {{latitude}}<br>
+              <strong>Longitude:</strong> {{longitude}}
+            </p>
+          </div>
+        </div>
+
+        <footer class="card-footer">
+          <a href="/placemark/{{../playlist._id}}/edit/{{_id}}" class="card-footer-item">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-edit"></i>
+              </span>
+              <span>Edit</span>
             </span>
           </a>
-        </td>
 
-        <td class="has-text-centered">
-          <a href="/category/{{../playlist._id}}/deleteplacemark/{{_id}}" class="button is-small is-danger is-light">
-            <span class="icon">
-              <i class="fas fa-trash"></i>
+          <a href="/category/{{../playlist._id}}/deleteplacemark/{{_id}}" class="card-footer-item">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-trash"></i>
+              </span>
+              <span>Delete</span>
             </span>
           </a>
-        </td>
+        </footer>
 
-      </tr>
-    {{/each}}
-  </tbody>
-</table>
+      </div>
+    </div>
+  {{/each}}
+</div>
+
+{{else}}
+
+<div class="notification is-light has-text-centered">
+  No placemarks added yet. Use the form on the right to add one.
+</div>
+
+{{/if}}

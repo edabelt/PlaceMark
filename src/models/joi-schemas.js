@@ -24,12 +24,42 @@ export const UserArray = Joi.array().items(UserSpecPlus).label("UserArray");
 export const TrackSpec = Joi.object()
   .keys({
     name: Joi.string().required().example("Cliffs of Moher"),
-    latitude: Joi.number().required().messages({
-      "number.base": "Latitude must be a number",
-    }).example(52.9715),
-    longitude: Joi.number().required().messages({
-      "number.base": "Longitude must be a number",
-    }).example(-9.4309),
+
+    locationName: Joi.string()
+      .required()
+      .example("County Clare"),
+
+    latitude: Joi.number()
+      .required()
+      .messages({
+        "number.base": "Latitude must be a number",
+        "any.required": "Latitude is required",
+      })
+      .example(52.9715),
+
+    longitude: Joi.number()
+      .required()
+      .messages({
+        "number.base": "Longitude must be a number",
+        "any.required": "Longitude is required",
+      })
+      .example(-9.4309),
+
+    description: Joi.string()
+      .max(500)
+      .allow("")
+      .optional()
+      .messages({
+        "string.max": "Description must be 500 characters or fewer",
+      })
+      .example("Famous coastal cliffs in Ireland."),
+
+    image: Joi.string()
+      .uri()
+      .allow("")
+      .optional()
+      .example("https://example.com/cliffs.jpg"),
+
     playlistid: IdSpec,
   })
   .label("PlaceMark");
