@@ -1,6 +1,28 @@
 {{> menu active="dashboard"}}
 
 <section class="section">
-  {{> list-playlists}}
-  {{> add-playlist}}
+  <div class="container">
+    <h1 class="title is-3">PlaceMark Dashboard</h1>
+    <p class="subtitle is-6">
+      Manage your categories and placemarks.
+    </p>
+
+    {{> error}}
+
+    <div class="columns is-variable is-6">
+      <div class="column is-two-thirds">
+        <div class="box">
+          <h2 class="title is-5">Your Categories</h2>
+          {{> list-categories}}
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="box">
+          <h2 class="title is-5">Add New Category</h2>
+          {{> add-category}}
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

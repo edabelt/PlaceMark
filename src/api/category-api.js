@@ -3,23 +3,23 @@ import { IdSpec, PlaylistArraySpec, PlaylistSpec, PlaylistSpecPlus } from "../mo
 import { db } from "../models/db.js";
 import { validationError } from "./logger.js";
 
-export const playlistApi = {
+export const categoryApi = {
   find: {
     auth: {
       strategy: "jwt",
     },
     handler: async function (request, h) {
       try {
-        const playlists = await db.playlistStore.getAllPlaylists();
-        return playlists;
+        const categories = await db.playlistStore.getAllPlaylists();
+        return categories;
       } catch (err) {
         return Boom.serverUnavailable("Database Error");
       }
     },
     tags: ["api"],
     response: { schema: PlaylistArraySpec, failAction: validationError },
-    description: "Get all playlists",
-    notes: "Returns all playlists",
+    description: "Get all categories",
+    notes: "Returns all categories",
   },
 
   findOne: {
@@ -28,18 +28,18 @@ export const playlistApi = {
     },
     async handler(request) {
       try {
-        const playlist = await db.playlistStore.getPlaylistById(request.params.id);
-        if (!playlist) {
-          return Boom.notFound("No Playlist with this id");
+        const category = await db.playlistStore.getPlaylistById(request.params.id);
+        if (!category) {
+          return Boom.notFound("No Category with this id");
         }
-        return playlist;
+        return category;
       } catch (err) {
-        return Boom.serverUnavailable("No Playlist with this id");
+        return Boom.serverUnavailable("No Category with this id");
       }
     },
     tags: ["api"],
-    description: "Find a Playlist",
-    notes: "Returns a playlist",
+    description: "Find a Category",
+    notes: "Returns a category",
     validate: { params: { id: IdSpec }, failAction: validationError },
     response: { schema: PlaylistSpecPlus, failAction: validationError },
   },
@@ -50,19 +50,19 @@ export const playlistApi = {
     },
     handler: async function (request, h) {
       try {
-        const playlist = request.payload;
-        const newPlaylist = await db.playlistStore.addPlaylist(playlist);
-        if (newPlaylist) {
-          return h.response(newPlaylist).code(201);
+        const category = request.payload;
+        const newCategory = await db.playlistStore.addPlaylist(category);
+        if (newCategory) {
+          return h.response(newCategory).code(201);
         }
-        return Boom.badImplementation("error creating playlist");
+        return Boom.badImplementation("error creating category");
       } catch (err) {
         return Boom.serverUnavailable("Database Error");
       }
     },
     tags: ["api"],
-    description: "Create a Playlist",
-    notes: "Returns the newly created playlist",
+    description: "Create a Category",
+    notes: "Returns the newly created category",
     validate: { payload: PlaylistSpec, failAction: validationError },
     response: { schema: PlaylistSpecPlus, failAction: validationError },
   },
@@ -73,18 +73,18 @@ export const playlistApi = {
     },
     handler: async function (request, h) {
       try {
-        const playlist = await db.playlistStore.getPlaylistById(request.params.id);
-        if (!playlist) {
-          return Boom.notFound("No Playlist with this id");
+        const category = await db.playlistStore.getPlaylistById(request.params.id);
+        if (!category) {
+          return Boom.notFound("No Category with this id");
         }
-        await db.playlistStore.deletePlaylistById(playlist._id);
+        await db.playlistStore.deletePlaylistById(category._id);
         return h.response().code(204);
       } catch (err) {
-        return Boom.serverUnavailable("No Playlist with this id");
+        return Boom.serverUnavailable("No Category with this id");
       }
     },
     tags: ["api"],
-    description: "Delete a playlist",
+    description: "Delete a category",
     validate: { params: { id: IdSpec }, failAction: validationError },
   },
 
@@ -101,6 +101,6 @@ export const playlistApi = {
       }
     },
     tags: ["api"],
-    description: "Delete all PlaylistApi",
+    description: "Delete all categories",
   },
 };

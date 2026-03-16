@@ -10,10 +10,10 @@ import HapiSwagger from "hapi-swagger";
 import { fileURLToPath } from "url";
 import Handlebars from "handlebars";
 import { webRoutes } from "./web-routes.js";
+import { apiRoutes } from "./api-routes.js";
 import { db } from "./models/db.js";
 import { accountsController } from "./controllers/accounts-controller.js";
 import { validate } from "./api/jwt-utils.js";
-import { apiRoutes } from "./api-routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,13 +21,12 @@ const __dirname = path.dirname(__filename);
 const result = dotenv.config();
 if (result.error) {
   console.log(result.error.message);
-  // process.exit(1);
 }
 
 const swaggerOptions = {
   info: {
-    title: "PlaceMark",
-    version: "0.1",
+    title: "PlaceMark API",
+    version: "1.0",
   },
   securityDefinitions: {
     jwt: {
@@ -79,16 +78,20 @@ async function init() {
     redirectTo: "/",
     validate: accountsController.validate,
   });
+
   server.auth.strategy("jwt", "jwt", {
     key: process.env.cookie_password,
-    validate: validate,
+    validate,
     verifyOptions: { algorithms: ["HS256"] },
   });
+
   server.auth.default("session");
 
   db.init("mongo");
+
   server.route(webRoutes);
   server.route(apiRoutes);
+
   await server.start();
   console.log("Server running on %s", server.info.uri);
 }

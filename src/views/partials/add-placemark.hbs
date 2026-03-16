@@ -1,0 +1,32 @@
+<form class="box" action="/category/{{playlist._id}}/addplacemark" method="POST">
+  <h2 class="title is-5">Add New PlaceMark</h2>
+
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Enter place name" name="name">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Latitude</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Enter latitude" name="latitude">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Longitude</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Enter longitude" name="longitude">
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <button class="button is-primary is-fullwidth">
+        Add PlaceMark
+      </button>
+    </div>
+  </div>
+</form>

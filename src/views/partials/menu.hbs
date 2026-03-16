@@ -1,39 +1,61 @@
-<nav class="navbar">
+<nav class="navbar is-light">
+
   <div class="navbar-brand">
-    {{> playtime-brand}}
+
+    {{> placemark-brand}}
+
+    <a role="button"
+       class="navbar-burger"
+       aria-label="menu"
+       aria-expanded="false"
+       data-target="navMenu">
+
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+
+    </a>
+
   </div>
-  <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false"> <span aria-hidden="true"></span>
-    <span aria-hidden="true"></span> <span aria-hidden="true"></span> </a>
-  <div class="navbar-menu" id="navMenu">
+
+  <div id="navMenu" class="navbar-menu">
+
     <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <a id="dashboard" class="button" href="/dashboard"> Dashboard </a> <a id="about" class="button" href="/about"> About </a> <a
-          id="logout" class="button" href="/logout"> Logout </a>
-        </div>
-      </div>
+
+      <a id="dashboard" class="navbar-item" href="/dashboard">
+        Dashboard
+      </a>
+
+      <a id="about" class="navbar-item" href="/about">
+        About
+      </a>
+
+      <a id="logout" class="navbar-item" href="/logout">
+        Logout
+      </a>
+
     </div>
+
   </div>
+
 </nav>
 
 <script>
-  document.getElementById("{{active}}").classList.add("is-primary");
-  document.addEventListener("DOMContentLoaded", () => {
-    // Get all "navbar-burger" elements
-    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"), 0);
-    // Check if there are any navbar burgers
-    if ($navbarBurgers.length > 0) {
-      // Add a click event on each of them
-      $navbarBurgers.forEach(el => {
-        el.addEventListener("click", () => {
-          // Get the target from the "data-target" attribute
-          const target = el.dataset.target;
-          const $target = document.getElementById(target);
-          // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-          el.classList.toggle("is-active");
-          $target.classList.toggle("is-active");
-        });
-      });
-    }
+document.addEventListener("DOMContentLoaded", () => {
+
+  const burgers = document.querySelectorAll(".navbar-burger");
+
+  burgers.forEach(el => {
+    el.addEventListener("click", () => {
+
+      const target = el.dataset.target;
+      const menu = document.getElementById(target);
+
+      el.classList.toggle("is-active");
+      menu.classList.toggle("is-active");
+
+    });
   });
+
+});
 </script>

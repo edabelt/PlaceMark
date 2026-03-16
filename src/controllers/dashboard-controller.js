@@ -6,11 +6,13 @@ export const dashboardController = {
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
       const playlists = await db.playlistStore.getUserPlaylists(loggedInUser._id);
+
       const viewData = {
-        title: "Playtime Dashboard",
+        title: "PlaceMark Dashboard",
         user: loggedInUser,
         playlists: playlists,
       };
+
       return h.view("dashboard-view", viewData);
     },
   },
@@ -20,15 +22,24 @@ export const dashboardController = {
       payload: PlaylistSpec,
       options: { abortEarly: false },
       failAction: function (request, h, error) {
-        return h.view("dashboard-view", { title: "Add Playlist error", errors: error.details }).takeover().code(400);
+        return h
+          .view("dashboard-view", {
+            title: "Add Category Error",
+            errors: error.details,
+          })
+          .takeover()
+          .code(400);
       },
     },
+
     handler: async function (request, h) {
       const loggedInUser = request.auth.credentials;
+
       const newPlayList = {
         userid: loggedInUser._id,
         title: request.payload.title,
       };
+
       await db.playlistStore.addPlaylist(newPlayList);
       return h.redirect("/dashboard");
     },

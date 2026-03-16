@@ -1,19 +1,46 @@
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar is-light">
   <div class="navbar-brand">
-    {{> playtime-brand}}
+
+    {{> placemark-brand}}
+
+    <a role="button"
+       class="navbar-burger"
+       aria-label="menu"
+       aria-expanded="false"
+       data-target="welcomeNavMenu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+
   </div>
-  <div id="navbarBasicExample" class="navbar-menu">
+
+  <div id="welcomeNavMenu" class="navbar-menu">
     <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <a class="button" id="login" href="/login"> Log in </a>
-          <a class="button" id="signup" href="/signup"> Sign up </a>
-        </div>
-      </div>
+      <a id="signup" class="navbar-item" href="/signup">Sign Up</a>
+      <a id="login" class="navbar-item" href="/login">Log In</a>
     </div>
   </div>
 </nav>
 
 <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const active = "{{active}}";
+    if (active) {
+      const element = document.getElementById(active);
+      if (element) {
+        element.classList.add("is-active");
+      }
+    }
 
+    const burgers = document.querySelectorAll(".navbar-burger");
+    burgers.forEach((el) => {
+      el.addEventListener("click", () => {
+        const target = el.dataset.target;
+        const menu = document.getElementById(target);
+        el.classList.toggle("is-active");
+        menu.classList.toggle("is-active");
+      });
+    });
+  });
 </script>

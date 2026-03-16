@@ -1,15 +1,17 @@
 import { TrackSpec } from "../models/joi-schemas.js";
 import { db } from "../models/db.js";
 
-export const playlistController = {
+export const categoryController = {
   index: {
     handler: async function (request, h) {
       const playlist = await db.playlistStore.getPlaylistById(request.params.id);
+
       const viewData = {
-        title: "Playlist",
+        title: "Category",
         playlist: playlist,
       };
-      return h.view("playlist-view", viewData);
+
+      return h.view("category-view", viewData);
     },
   },
 
@@ -19,18 +21,29 @@ export const playlistController = {
       options: { abortEarly: false },
       failAction: async function (request, h, error) {
         const currentPlaylist = await db.playlistStore.getPlaylistById(request.params.id);
-        return h.view("playlist-view", { title: "Add track error", playlist: currentPlaylist, errors: error.details }).takeover().code(400);
+
+        return h
+          .view("category-view", {
+            title: "Add PlaceMark Error",
+            playlist: currentPlaylist,
+            errors: error.details,
+          })
+          .takeover()
+          .code(400);
       },
     },
+
     handler: async function (request, h) {
       const playlist = await db.playlistStore.getPlaylistById(request.params.id);
+
       const newTrack = {
-        title: request.payload.title,
-        artist: request.payload.artist,
-        duration: Number(request.payload.duration),
-      };
+  name: request.payload.name,
+  latitude: Number(request.payload.latitude),
+  longitude: Number(request.payload.longitude),
+};
+
       await db.trackStore.addTrack(playlist._id, newTrack);
-      return h.redirect(`/playlist/${playlist._id}`);
+      return h.redirect(`/category/${playlist._id}`);
     },
   },
 
@@ -38,7 +51,7 @@ export const playlistController = {
     handler: async function (request, h) {
       const playlist = await db.playlistStore.getPlaylistById(request.params.id);
       await db.trackStore.deleteTrack(request.params.trackid);
-      return h.redirect(`/playlist/${playlist._id}`);
+      return h.redirect(`/category/${playlist._id}`);
     },
   },
 };

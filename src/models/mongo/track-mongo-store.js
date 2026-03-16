@@ -1,5 +1,4 @@
 import { Track } from "./track.js";
-import { Playlist } from "./playlist.js";
 
 export const trackMongoStore = {
   async getAllTracks() {
@@ -40,10 +39,21 @@ export const trackMongoStore = {
   },
 
   async updateTrack(track, updatedTrack) {
+    if (!track || !track._id) {
+      throw new Error("Invalid track supplied for update");
+    }
+
     const trackDoc = await Track.findOne({ _id: track._id });
-    trackDoc.title = updatedTrack.title;
-    trackDoc.artist = updatedTrack.artist;
-    trackDoc.duration = updatedTrack.duration;
+
+    if (!trackDoc) {
+      throw new Error("Track not found");
+    }
+
+    trackDoc.name = updatedTrack.name;
+    trackDoc.latitude = updatedTrack.latitude;
+    trackDoc.longitude = updatedTrack.longitude;
+
     await trackDoc.save();
+    return trackDoc;
   },
 };

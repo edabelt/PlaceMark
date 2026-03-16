@@ -3,23 +3,23 @@ import { db } from "../models/db.js";
 import { IdSpec, TrackSpec, TrackSpecPlus, TrackArraySpec } from "../models/joi-schemas.js";
 import { validationError } from "./logger.js";
 
-export const trackApi = {
+export const placemarkApi = {
   find: {
     auth: {
       strategy: "jwt",
     },
     handler: async function (request, h) {
       try {
-        const tracks = await db.trackStore.getAllTracks();
-        return tracks;
+        const placemarks = await db.trackStore.getAllTracks();
+        return placemarks;
       } catch (err) {
         return Boom.serverUnavailable("Database Error");
       }
     },
     tags: ["api"],
     response: { schema: TrackArraySpec, failAction: validationError },
-    description: "Get all trackApi",
-    notes: "Returns all trackApi",
+    description: "Get all placemarks",
+    notes: "Returns all placemarks",
   },
 
   findOne: {
@@ -28,18 +28,18 @@ export const trackApi = {
     },
     async handler(request) {
       try {
-        const track = await db.trackStore.getTrackById(request.params.id);
-        if (!track) {
-          return Boom.notFound("No track with this id");
+        const placemark = await db.trackStore.getTrackById(request.params.id);
+        if (!placemark) {
+          return Boom.notFound("No placemark with this id");
         }
-        return track;
+        return placemark;
       } catch (err) {
-        return Boom.serverUnavailable("No track with this id");
+        return Boom.serverUnavailable("No placemark with this id");
       }
     },
     tags: ["api"],
-    description: "Find a Track",
-    notes: "Returns a track",
+    description: "Find a Placemark",
+    notes: "Returns a placemark",
     validate: { params: { id: IdSpec }, failAction: validationError },
     response: { schema: TrackSpecPlus, failAction: validationError },
   },
@@ -50,18 +50,18 @@ export const trackApi = {
     },
     handler: async function (request, h) {
       try {
-        const track = await db.trackStore.addTrack(request.params.id, request.payload);
-        if (track) {
-          return h.response(track).code(201);
+        const placemark = await db.trackStore.addTrack(request.params.id, request.payload);
+        if (placemark) {
+          return h.response(placemark).code(201);
         }
-        return Boom.badImplementation("error creating track");
+        return Boom.badImplementation("error creating placemark");
       } catch (err) {
         return Boom.serverUnavailable("Database Error");
       }
     },
     tags: ["api"],
-    description: "Create a track",
-    notes: "Returns the newly created track",
+    description: "Create a placemark",
+    notes: "Returns the newly created placemark",
     validate: { payload: TrackSpec },
     response: { schema: TrackSpecPlus, failAction: validationError },
   },
@@ -79,7 +79,7 @@ export const trackApi = {
       }
     },
     tags: ["api"],
-    description: "Delete all trackApi",
+    description: "Delete all placemarks",
   },
 
   deleteOne: {
@@ -88,18 +88,18 @@ export const trackApi = {
     },
     handler: async function (request, h) {
       try {
-        const track = await db.trackStore.getTrackById(request.params.id);
-        if (!track) {
-          return Boom.notFound("No Track with this id");
+        const placemark = await db.trackStore.getTrackById(request.params.id);
+        if (!placemark) {
+          return Boom.notFound("No Placemark with this id");
         }
-        await db.trackStore.deleteTrack(track._id);
+        await db.trackStore.deleteTrack(placemark._id);
         return h.response().code(204);
       } catch (err) {
-        return Boom.serverUnavailable("No Track with this id");
+        return Boom.serverUnavailable("No Placemark with this id");
       }
     },
     tags: ["api"],
-    description: "Delete a track",
+    description: "Delete a placemark",
     validate: { params: { id: IdSpec }, failAction: validationError },
   },
 };
