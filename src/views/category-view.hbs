@@ -9,15 +9,15 @@
 
     {{> error}}
 
+    <div class="box mb-5">
+      <h2 class="title is-5">Map</h2>
+      <div id="map" style="height: 400px;"></div>
+    </div>
+
     <div class="columns is-variable is-6">
       <div class="column is-three-quarters">
         <div class="box">
-          <div class="level">
-            <div class="level-left">
-              <h2 class="title is-5 mb-0">PlaceMarks</h2>
-            </div>
-          </div>
-
+          <h2 class="title is-5">PlaceMarks</h2>
           {{> list-placemarks}}
         </div>
       </div>
@@ -31,3 +31,45 @@
     </div>
   </div>
 </section>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  const placemarks = {{{json playlist.tracks}}};
+
+  window.previewMarker = null;
+  window.map = L.map("map").setView([53.3498, -6.2603], 6);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(window.map);
+
+  const markers = [];
+
+  placemarks.forEach((placemark) => {
+    const lat = parseFloat(placemark.latitude);
+    const lon = parseFloat(placemark.longitude);
+
+    if (!isNaN(lat) && !isNaN(lon)) {
+      const marker = L.marker([lat, lon]).addTo(window.map);
+
+      marker.bindPopup(`
+        <strong>${placemark.name || "Unnamed Place"}</strong><br>
+        ${placemark.locationName || ""}<br>
+        ${placemark.description || ""}
+      `);
+
+      markers.push(marker);
+    }
+  });
+
+  if (markers.length > 0) {
+    const group = L.featureGroup(markers);
+    window.map.fitBounds(group.getBounds().pad(0.2));
+  }
+</script>

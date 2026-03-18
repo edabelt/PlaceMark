@@ -1,16 +1,28 @@
 import { Track } from "./track.js";
 
 export const trackMongoStore = {
+
   async getAllTracks() {
     const tracks = await Track.find().lean();
     return tracks;
   },
 
   async addTrack(playlistId, track) {
-    track.playlistid = playlistId;
-    const newTrack = new Track(track);
-    const trackObj = await newTrack.save();
-    return this.getTrackById(trackObj._id);
+
+    const newTrack = {
+      name: track.name,
+      locationName: track.locationName,
+      latitude: Number(track.latitude),
+      longitude: Number(track.longitude),
+      description: track.description,
+      image: track.image,
+      playlistid: playlistId
+    };
+
+    const trackDoc = new Track(newTrack);
+    const savedTrack = await trackDoc.save();
+
+    return this.getTrackById(savedTrack._id);
   },
 
   async getTracksByPlaylistId(id) {
@@ -39,6 +51,7 @@ export const trackMongoStore = {
   },
 
   async updateTrack(track, updatedTrack) {
+
     if (!track || !track._id) {
       throw new Error("Invalid track supplied for update");
     }
@@ -51,12 +64,14 @@ export const trackMongoStore = {
 
     trackDoc.name = updatedTrack.name;
     trackDoc.locationName = updatedTrack.locationName;
-    trackDoc.latitude = updatedTrack.latitude;
-    trackDoc.longitude = updatedTrack.longitude;
+    trackDoc.latitude = Number(updatedTrack.latitude);
+    trackDoc.longitude = Number(updatedTrack.longitude);
     trackDoc.description = updatedTrack.description;
     trackDoc.image = updatedTrack.image;
 
     await trackDoc.save();
+
     return trackDoc;
-  },
+  }
+
 };

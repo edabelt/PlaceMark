@@ -1,6 +1,13 @@
 import { PlaylistSpec } from "../models/joi-schemas.js";
 import { db } from "../models/db.js";
 
+function capitalize(text) {
+  if (!text) return "";
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
 export const dashboardController = {
   index: {
     handler: async function (request, h) {
@@ -37,7 +44,7 @@ export const dashboardController = {
 
       const newPlayList = {
         userid: loggedInUser._id,
-        title: request.payload.title,
+        title: capitalize(request.payload.title),
       };
 
       await db.playlistStore.addPlaylist(newPlayList);

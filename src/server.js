@@ -38,6 +38,11 @@ const swaggerOptions = {
   security: [{ jwt: [] }],
 };
 
+// Register Handlebars helper here
+Handlebars.registerHelper("json", function (context) {
+  return JSON.stringify(context);
+});
+
 async function init() {
   const server = Hapi.server({
     port: process.env.PORT || 3000,

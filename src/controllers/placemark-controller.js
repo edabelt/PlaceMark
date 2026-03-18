@@ -1,6 +1,11 @@
 import { TrackSpec } from "../models/joi-schemas.js";
 import { db } from "../models/db.js";
 
+function capitalize(text) {
+  if (!text) return "";
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export const placemarkController = {
   index: {
     handler: async function (request, h) {
@@ -41,15 +46,16 @@ export const placemarkController = {
       const track = await db.trackStore.getTrackById(request.params.trackid);
 
       const newTrack = {
-        name: request.payload.name,
-        locationName: request.payload.locationName,
+        name: capitalize(request.payload.name),
+        locationName: capitalize(request.payload.locationName),
         latitude: Number(request.payload.latitude),
         longitude: Number(request.payload.longitude),
-        description: request.payload.description,
+        description: capitalize(request.payload.description),
         image: request.payload.image,
       };
 
       await db.trackStore.updateTrack(track, newTrack);
+
       return h.redirect(`/category/${request.params.id}`);
     },
   },

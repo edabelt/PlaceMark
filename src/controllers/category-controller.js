@@ -1,6 +1,11 @@
 import { TrackSpec } from "../models/joi-schemas.js";
 import { db } from "../models/db.js";
 
+function capitalize(text) {
+  if (!text) return "";
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export const categoryController = {
   index: {
     handler: async function (request, h) {
@@ -37,15 +42,16 @@ export const categoryController = {
       const playlist = await db.playlistStore.getPlaylistById(request.params.id);
 
       const newTrack = {
-        name: request.payload.name,
-        locationName: request.payload.locationName,
+        name: capitalize(request.payload.name),
+        locationName: capitalize(request.payload.locationName),
         latitude: Number(request.payload.latitude),
         longitude: Number(request.payload.longitude),
-        description: request.payload.description,
+        description: capitalize(request.payload.description),
         image: request.payload.image,
       };
 
       await db.trackStore.addTrack(playlist._id, newTrack);
+
       return h.redirect(`/category/${playlist._id}`);
     },
   },
@@ -54,6 +60,7 @@ export const categoryController = {
     handler: async function (request, h) {
       const playlist = await db.playlistStore.getPlaylistById(request.params.id);
       await db.trackStore.deleteTrack(request.params.trackid);
+
       return h.redirect(`/category/${playlist._id}`);
     },
   },

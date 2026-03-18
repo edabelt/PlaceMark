@@ -4,14 +4,12 @@
   <div class="container">
     <div class="columns is-centered">
       <div class="column is-half">
-
         <div class="box">
           <h1 class="title is-4">Edit PlaceMark</h1>
 
           {{> error}}
 
           <form action="/placemark/{{playlist._id}}/update/{{track._id}}" method="POST">
-
             <div class="field">
               <label class="label">Name</label>
               <div class="control">
@@ -21,22 +19,23 @@
 
             <div class="field">
               <label class="label">Location</label>
-              <div class="control">
-                <input class="input" type="text" name="locationName" value="{{track.locationName}}">
+              <div class="control has-addons">
+                <input id="locationName" class="input" type="text" name="locationName" value="{{track.locationName}}">
+                <button type="button" class="button is-info" onclick="findCoordinates()">Find</button>
               </div>
             </div>
 
             <div class="field">
               <label class="label">Latitude</label>
               <div class="control">
-                <input class="input" type="text" name="latitude" value="{{track.latitude}}">
+                <input id="latitude" class="input" type="text" name="latitude" value="{{track.latitude}}">
               </div>
             </div>
 
             <div class="field">
               <label class="label">Longitude</label>
               <div class="control">
-                <input class="input" type="text" name="longitude" value="{{track.longitude}}">
+                <input id="longitude" class="input" type="text" name="longitude" value="{{track.longitude}}">
               </div>
             </div>
 
@@ -48,7 +47,7 @@
             </div>
 
             <div class="field">
-              <label class="label">Image URL (temporary)</label>
+              <label class="label">Image URL</label>
               <div class="control">
                 <input class="input" type="text" name="image" value="{{track.image}}">
               </div>
@@ -64,15 +63,91 @@
             {{/if}}
 
             <div class="field">
-              <button class="button is-primary is-fullwidth">
-                Update PlaceMark
-              </button>
+              <div class="control">
+                <button class="button is-primary is-fullwidth">
+                  Update PlaceMark
+                </button>
+              </div>
             </div>
-
           </form>
         </div>
 
+        <div class="box mt-5">
+          <h2 class="title is-5">Map Preview</h2>
+          <div id="edit-map" style="height: 400px;"></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+  let editMap;
+  let editMarker;
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const lat = parseFloat(document.getElementById("latitude").value);
+    const lon = parseFloat(document.getElementById("longitude").value);
+
+    if (!isNaN(lat) && !isNaN(lon)) {
+      editMap = L.map("edit-map").setView([lat, lon], 13);
+    } else {
+      editMap = L.map("edit-map").setView([53.3498, -6.2603], 6);
+    }
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(editMap);
+
+    if (!isNaN(lat) && !isNaN(lon)) {
+      editMarker = L.marker([lat, lon]).addTo(editMap)
+        .bindPopup("Current PlaceMark")
+        .openPopup();
+    }
+  });
+
+  async function findCoordinates() {
+    const location = document.getElementById("locationName").value.trim();
+
+    if (!location) {
+      alert("Please enter a location name first");
+      return;
+    }
+
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
+    );
+
+    const data = await response.json();
+
+    if (data.length === 0) {
+      alert("Location not found");
+      return;
+    }
+
+    const lat = parseFloat(data[0].lat);
+    const lon = parseFloat(data[0].lon);
+
+    document.getElementById("latitude").value = lat;
+    document.getElementById("longitude").value = lon;
+
+    if (editMap) {
+      editMap.setView([lat, lon], 13);
+
+      if (editMarker) {
+        editMap.removeLayer(editMarker);
+      }
+
+      editMarker = L.marker([lat, lon]).addTo(editMap)
+        .bindPopup("Updated PlaceMark Preview")
+        .openPopup();
+    }
+  }
+</script>
