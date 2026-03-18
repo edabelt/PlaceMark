@@ -1,73 +1,95 @@
 {{#if playlist.tracks.length}}
+  <div class="columns is-multiline">
+    {{#each playlist.tracks}}
+      <div class="column is-half">
+        <div class="card placemark-card">
 
-<div class="columns is-multiline">
-  {{#each playlist.tracks}}
-    <div class="column is-half">
-      <div class="card">
+          <div class="card-image">
+            {{#if image}}
+              <figure class="image is-4by3">
+                <img src="{{image}}" alt="{{name}}">
+              </figure>
+            {{else}}
+              <figure class="image is-4by3 has-background-light is-flex is-align-items-center is-justify-content-center">
+                <span>No image</span>
+              </figure>
+            {{/if}}
+          </div>
 
-        <div class="card-image">
-          {{#if image}}
-            <figure class="image is-4by3">
-              <img src="{{image}}" alt="{{name}}">
-            </figure>
-          {{else}}
-            <figure class="image is-4by3 has-background-light is-flex is-align-items-center is-justify-content-center">
-              <span>No image</span>
-            </figure>
-          {{/if}}
-        </div>
+          <div class="card-content">
+            <div class="columns is-mobile is-vcentered mb-3">
+              <div class="column is-three-quarters">
+                <div>
+                  <p class="is-size-4 has-text-weight-bold mb-1" style="line-height: 1.2; word-break: break-word;">
+                    {{name}}
+                  </p>
+                  <p class="is-size-6 has-text-grey mb-0" style="line-height: 1.2; word-break: break-word;">
+                    {{locationName}}
+                  </p>
+                </div>
+              </div>
 
-        <div class="card-content">
-          <div class="media">
-            <div class="media-content">
-              <p class="title is-5">{{name}}</p>
-              <p class="subtitle is-6">{{locationName}}</p>
+              {{#if weather}}
+                <div class="column is-one-quarter has-text-centered">
+                  {{#if weather.icon}}
+                    <figure class="image is-48x48 is-inline-block mb-1">
+                      <img src="https://openweathermap.org/img/wn/{{weather.icon}}@2x.png" alt="{{weather.description}}">
+                    </figure>
+                  {{/if}}
+                  <p class="is-size-7 has-text-weight-semibold">{{weather.temp}} °C</p>
+                </div>
+              {{/if}}
+            </div>
+
+            <div class="content">
+              {{#if description}}
+                <p>{{description}}</p>
+              {{else}}
+                <p>No description available.</p>
+              {{/if}}
+
+              <div class="tags mt-3">
+                <span class="tag is-success is-light">Lat: {{latitude}}</span>
+                <span class="tag is-success is-light">Lng: {{longitude}}</span>
+              </div>
+
+              {{#if weather}}
+                <div class="notification is-light py-2 px-3 mt-3 mb-0">
+                  <strong>Weather:</strong> {{weather.description}}<br>
+                  <strong>Temperature:</strong> {{weather.temp}} °C
+                </div>
+              {{/if}}
             </div>
           </div>
 
-          <div class="content">
-            {{#if description}}
-              <p>{{description}}</p>
-            {{else}}
-              <p>No description available.</p>
+          <footer class="card-footer">
+            <a href="/placemark/{{../playlist._id}}/edit/{{_id}}" class="card-footer-item">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fas fa-edit"></i>
+                </span>
+                <span>Edit</span>
+              </span>
+            </a>
+
+            {{#if ../isAdmin}}
+              <a href="/category/{{../playlist._id}}/deleteplacemark/{{_id}}" class="card-footer-item">
+                <span class="icon-text">
+                  <span class="icon">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                  <span>Delete</span>
+                </span>
+              </a>
             {{/if}}
+          </footer>
 
-            <p>
-              <strong>Latitude:</strong> {{latitude}}<br>
-              <strong>Longitude:</strong> {{longitude}}
-            </p>
-          </div>
         </div>
-
-        <footer class="card-footer">
-          <a href="/placemark/{{../playlist._id}}/edit/{{_id}}" class="card-footer-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-edit"></i>
-              </span>
-              <span>Edit</span>
-            </span>
-          </a>
-
-          <a href="/category/{{../playlist._id}}/deleteplacemark/{{_id}}" class="card-footer-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-trash"></i>
-              </span>
-              <span>Delete</span>
-            </span>
-          </a>
-        </footer>
-
       </div>
-    </div>
-  {{/each}}
-</div>
-
+    {{/each}}
+  </div>
 {{else}}
-
-<div class="notification is-light has-text-centered">
-  No placemarks added yet. Use the form on the right to add one.
-</div>
-
+  <div class="notification is-light has-text-centered">
+    No placemarks added yet. Use the form on the right to add one.
+  </div>
 {{/if}}

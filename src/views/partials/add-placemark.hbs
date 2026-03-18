@@ -1,17 +1,17 @@
-<form class="box" action="/category/{{playlist._id}}/addplacemark" method="POST">
+<form id="add-placemark-form" class="box" action="/category/{{playlist._id}}/addplacemark" method="POST">
   <h2 class="title is-5">Add New PlaceMark</h2>
 
   <div class="field">
     <label class="label">Name</label>
     <div class="control">
-      <input class="input" type="text" placeholder="Enter place name" name="name">
+      <input class="input" type="text" placeholder="Enter place name" name="name" required>
     </div>
   </div>
 
   <div class="field">
     <label class="label">Location Name</label>
     <div class="control has-addons">
-      <input id="locationName" class="input" type="text" placeholder="Enter city or place" name="locationName">
+      <input id="locationName" class="input" type="text" placeholder="Enter city or place" name="locationName" required>
       <button type="button" class="button is-info" onclick="findCoordinates()">Find</button>
     </div>
   </div>
@@ -19,42 +19,60 @@
   <div class="field">
     <label class="label">Latitude</label>
     <div class="control">
-      <input id="latitude" class="input" type="text" placeholder="Latitude will autofill" name="latitude">
+      <input id="latitude" class="input" type="text" placeholder="Latitude will autofill" name="latitude" required>
     </div>
   </div>
 
   <div class="field">
     <label class="label">Longitude</label>
     <div class="control">
-      <input id="longitude" class="input" type="text" placeholder="Longitude will autofill" name="longitude">
+      <input id="longitude" class="input" type="text" placeholder="Longitude will autofill" name="longitude" required>
     </div>
   </div>
 
   <div class="field">
     <label class="label">Description</label>
     <div class="control">
-      <textarea class="textarea" name="description" placeholder="Describe this place (max 500 words)"></textarea>
+      <textarea class="textarea" name="description" placeholder="Describe this place (max 500 characters)"></textarea>
     </div>
   </div>
 
   <div class="field">
-    <label class="label">Image URL</label>
+    <label class="label">Image File</label>
     <div class="control">
-      <input class="input" type="text" placeholder="Enter image URL" name="image">
+      <input id="imageFile" class="input" type="file" accept="image/*">
     </div>
   </div>
 
+  <input type="hidden" id="image" name="image">
+
   <div class="field">
     <div class="control">
-      <button class="button is-primary is-fullwidth">
+      <button id="submitButton" class="button is-primary is-fullwidth" type="submit">
         Add PlaceMark
       </button>
     </div>
   </div>
 </form>
 
-<script>
-  async function findCoordinates() {
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA8m4KeL2KeZ97wsJ5oIHPoCmSTcl9W1y4",
+    authDomain: "placemark-ae1ce.firebaseapp.com",
+    projectId: "placemark-ae1ce",
+    storageBucket: "placemark-ae1ce.firebasestorage.app",
+    messagingSenderId: "953068667904",
+    appId: "1:953068667904:web:b65bc29a89277f1d1f04e5",
+    measurementId: "G-N4PKCX2LY5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+
+  window.findCoordinates = async function () {
     const location = document.getElementById("locationName").value.trim();
 
     if (!location) {
@@ -91,5 +109,39 @@
         .bindPopup("New PlaceMark Preview")
         .openPopup();
     }
-  }
+  };
+
+  const form = document.getElementById("add-placemark-form");
+  const imageFileInput = document.getElementById("imageFile");
+  const imageUrlInput = document.getElementById("image");
+  const submitButton = document.getElementById("submitButton");
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const file = imageFileInput.files[0];
+
+    if (file) {
+      try {
+        submitButton.disabled = true;
+        submitButton.textContent = "Uploading image...";
+
+        const fileName = `${Date.now()}-${file.name}`;
+        const storageRef = ref(storage, `placemarks/${fileName}`);
+
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        imageUrlInput.value = downloadURL;
+      } catch (error) {
+        console.error(error);
+        alert("Image upload failed");
+        submitButton.disabled = false;
+        submitButton.textContent = "Add PlaceMark";
+        return;
+      }
+    }
+
+    form.submit();
+  });
 </script>

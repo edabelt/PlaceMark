@@ -88,7 +88,11 @@ export const accountsController = {
     },
   },
 
-  async validate(request, session) {
+  isAdmin: function (user) {
+    return user && user.role === "admin";
+  },
+
+  validate: async function (request, session) {
     const user = await db.userStore.getUserById(session.id);
 
     if (!user) {
